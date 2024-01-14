@@ -7,9 +7,13 @@ let primeiro_array = 0;
 
 console.log("Algumas combinações legais: 57, 41, 73, 129, 77, 22, 99, 110, 30");
 
+let largura = 700;
+let altura = 400;
+
 input = document.getElementById("regra");
 input.addEventListener("keyup", ()=>{
   num_regra = input.value;
+  executar=1;
 });
 
 let cells=[];
@@ -30,37 +34,42 @@ function draw_cells(cells, w, h=0){
   }
 }
 
+let executar = 1;
+
 function setup() {
-  createCanvas(700, 1400);
+  createCanvas(largura, altura);
 }
 
 function draw() {
-  background(220);
-  fill("black");
-  stroke("black");
+  if(executar === 1){
+    background(220);
+    fill("black");
+    stroke("black");
 
-  let automata = regra(num_regra);
-  
-  let w = width/(tamanho);
-  draw_cells(cells, w);
-  
-  let first = cells;
-  for(let j=1; j<geracoes; j++){
-    let nextCells = [];
-    nextCells[0] = first[0];
-    nextCells[first.length-1] = cells[first.length-1];
+    let automata = regra(num_regra);
     
-    for(let i=0; i<first.length; i++){
-      let left = first[(i-1+tamanho)%tamanho];
-      let itself = first[i]
-      let right = first[(i+1+tamanho)%tamanho];
-      nextCells[i] = automata(left, itself, right);
+    let w = width/(tamanho);
+    draw_cells(cells, w);
+    
+    let first = cells;
+    for(let j=1; j<geracoes; j++){
+      let nextCells = [];
+      nextCells[0] = first[0];
+      nextCells[first.length-1] = cells[first.length-1];
+      
+      for(let i=0; i<first.length; i++){
+        let left = first[(i-1+tamanho)%tamanho];
+        let itself = first[i]
+        let right = first[(i+1+tamanho)%tamanho];
+        nextCells[i] = automata(left, itself, right);
+      }
+
+      draw_cells(nextCells, w, j*w);
+      first = nextCells;
     }
 
-    draw_cells(nextCells, w, j*w);
-    first = nextCells;
-  }
-  
+    executar += 1;
+  }  
 }
 
 //retorna o binario invertido
